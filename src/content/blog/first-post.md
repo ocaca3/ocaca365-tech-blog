@@ -2,7 +2,6 @@
 title: 'はじめての記事'
 description: 'ブログ開設しました！'
 pubDate: '2026-05-05'
-heroImage: '/blog-placeholder-1.jpg'
 ---
 
 ## ブログ開設しました
