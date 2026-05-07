@@ -1,49 +1,252 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+
+// 最新4件
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4);
+
+// タグ集計(全記事から)
+const allPosts = await getCollection('blog');
+const tagCounts = new Map<string, number>();
+for (const p of allPosts) {
+  for (const t of (p.data.tags ?? []) as string[]) {
+    tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+  }
+}
+const tags = [...tagCounts.entries()]
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 8);
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
+<html lang="ja">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main class="oc-main">
+      <!-- Hero -->
+	  <section class="oc-hero">
+		<h1>A place to <em>think</em><br />out loud.</h1>
+		<p class="oc-hero-sub">
+			技術、投資、教育——日々考えてることを、書きながら整理する場所。
+		</p>
+		<div class="oc-meta">
+			<span class="oc-meta-item">📍 Sakai, Osaka</span>
+			<span class="oc-meta-item">☁️ AWS Certified ×10</span>
+			<span class="oc-meta-item">🛠 Infrastructure Engineer</span>
+		</div>
+		</section>
+
+      <!-- Latest articles -->
+      <section class="oc-section">
+        <div class="oc-section-head">
+          <span class="oc-section-label">Latest articles</span>
+          <a href="/blog/" class="oc-section-link">View all →</a>
+        </div>
+        <div class="oc-articles">
+          {posts.map((post) => (
+            <a href={`/blog/${post.id}/`} class="oc-article">
+              <div class="oc-date">
+                <FormattedDate date={post.data.pubDate} />
+              </div>
+              <div class="oc-article-body">
+                <h3 class="oc-article-title">{post.data.title}</h3>
+                {post.data.description && (
+                  <p class="oc-article-excerpt">{post.data.description}</p>
+                )}
+              </div>
+              <div class="oc-tag">
+                {(post.data.tags ?? []).slice(0, 2).join(' / ')}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Tags -->
+	  {tags.length > 0 && (
+  <section class="oc-section">
+    <div class="oc-section-head">
+      <span class="oc-section-label">Browse by topic</span>
+    </div>
+    <div class="oc-tags-grid">
+      {tags.map(([name, count]) => (
+        <div class="oc-tag-card">
+          <p class="oc-tag-name">{name}</p>
+          <span class="oc-tag-count">{count} {count === 1 ? 'article' : 'articles'}</span>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+    </main>
+    <Footer />
+
+    <style>
+      .oc-main {
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--oc-text);
+        line-height: 1.6;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .oc-hero {
+        padding: 96px 56px 80px;
+      }
+      .oc-hero h1 {
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 300;
+        font-size: clamp(40px, 6vw, 68px);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        margin: 0 0 32px;
+        color: var(--oc-text);
+      }
+      .oc-hero h1 em {
+		font-style: normal;
+        color: var(--oc-accent);
+        font-weight: 400;
+      }
+      .oc-hero-sub {
+        font-size: 19px;
+        line-height: 1.6;
+        color: var(--oc-text-muted);
+        max-width: 620px;
+        margin: 0 0 40px;
+      }
+      .oc-meta {
+        display: flex;
+        gap: 28px;
+        font-size: 13px;
+        color: var(--oc-text-faint);
+        flex-wrap: wrap;
+      }
+      .oc-meta-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .oc-section {
+        padding: 64px 56px;
+        border-top: 1px solid var(--oc-border);
+      }
+      .oc-section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 40px;
+      }
+      .oc-section-label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--oc-text-faint);
+      }
+      .oc-section-link {
+        font-size: 14px;
+        color: var(--oc-text);
+        text-decoration: none;
+        border-bottom: 1px solid var(--oc-accent);
+        padding-bottom: 2px;
+      }
+
+      .oc-articles {
+        display: grid;
+        gap: 0;
+      }
+      .oc-article {
+        display: grid;
+        grid-template-columns: 140px 1fr 140px;
+        gap: 32px;
+        padding: 28px 0;
+        border-top: 1px solid var(--oc-border);
+        align-items: baseline;
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.2s;
+      }
+      .oc-article:hover {
+        background: rgba(124, 198, 42, 0.07);
+        margin: 0 -16px;
+        padding: 28px 16px;
+      }
+      .oc-article:last-child {
+        border-bottom: 1px solid var(--oc-border);
+      }
+      .oc-date {
+        font-size: 13px;
+        color: var(--oc-text-faint);
+        font-variant-numeric: tabular-nums;
+      }
+      .oc-article-title {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 22px;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        margin: 0 0 6px;
+        color: var(--oc-text);
+      }
+      .oc-article-excerpt {
+        font-size: 14px;
+        color: var(--oc-text-muted);
+        line-height: 1.5;
+        margin: 0;
+      }
+      .oc-tag {
+        font-size: 12px;
+        color: var(--oc-accent-dark);
+        text-align: right;
+      }
+
+      .oc-tags-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
+      .oc-tag-card {
+        padding: 18px 20px;
+        border: 1px solid rgba(26, 25, 21, 0.1);
+        border-radius: 4px;
+        background: transparent;
+        transition: all 0.2s;
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+      .oc-tag-name {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 17px;
+        margin: 0 0 4px;
+        color: var(--oc-text);
+      }
+      .oc-tag-count {
+        font-size: 12px;
+        color: var(--oc-text-faint);
+      }
+
+      @media (max-width: 720px) {
+        .oc-hero { padding: 56px 24px 48px; }
+        .oc-section { padding: 48px 24px; }
+        .oc-article {
+          grid-template-columns: 1fr;
+          gap: 8px;
+        }
+        .oc-tag { text-align: left; }
+        .oc-tags-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </body>
 </html>

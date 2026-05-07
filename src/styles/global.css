@@ -139,3 +139,20 @@ hr {
 	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
 }
+
+/* === ocaca365 theme === */
+:root {
+  --oc-bg:           #f1ede0;
+  --oc-bg-elevated:  #ebe6d6;
+  --oc-text:         #1a1915;
+  --oc-text-muted:   #5c5a52;
+  --oc-text-faint:   #8a8780;
+  --oc-accent:       #7cc62a;
+  --oc-accent-dark:  #5a8a1f;
+  --oc-border:       rgba(26, 25, 21, 0.08);
+}
+
+body {
+  background: var(--oc-bg);
+  color: var(--oc-text);
+}

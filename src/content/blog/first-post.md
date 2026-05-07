@@ -2,6 +2,7 @@
 title: 'はじめての記事'
 description: 'ブログ開設しました！'
 pubDate: '2026-05-05'
+tags: ["test tag"]
 ---
 
 ## ブログ開設しました
