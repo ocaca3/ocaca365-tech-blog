@@ -33,17 +33,17 @@ const tags = [...tagCounts.entries()]
     <Header />
     <main class="oc-main">
       <!-- Hero -->
-	  <section class="oc-hero">
-		<h1>A place to <em>think</em><br />out loud.</h1>
-		<p class="oc-hero-sub">
-			技術、投資、教育——日々考えてることを、書きながら整理する場所。
-		</p>
-		<div class="oc-meta">
-			<span class="oc-meta-item">📍 Sakai, Osaka</span>
-			<span class="oc-meta-item">☁️ AWS Certified ×10</span>
-			<span class="oc-meta-item">🛠 Infrastructure Engineer</span>
-		</div>
-		</section>
+      <section class="oc-hero">
+        <h1>A place to <em>think</em><br />out loud.</h1>
+        <p class="oc-hero-sub">
+          技術、投資、教育——日々考えてることを、書きながら整理する場所。
+        </p>
+        <div class="oc-meta">
+          <span class="oc-meta-item">📍 Sakai, Osaka</span>
+          <span class="oc-meta-item">☁️ AWS Certified ×10</span>
+          <span class="oc-meta-item">🛠 Infrastructure Engineer</span>
+        </div>
+      </section>
 
       <!-- Latest articles -->
       <section class="oc-section">
@@ -72,21 +72,21 @@ const tags = [...tagCounts.entries()]
       </section>
 
       <!-- Tags -->
-	  {tags.length > 0 && (
-  <section class="oc-section">
-    <div class="oc-section-head">
-      <span class="oc-section-label">Browse by topic</span>
-    </div>
-    <div class="oc-tags-grid">
-      {tags.map(([name, count]) => (
-        <div class="oc-tag-card">
-          <p class="oc-tag-name">{name}</p>
-          <span class="oc-tag-count">{count} {count === 1 ? 'article' : 'articles'}</span>
-        </div>
-      ))}
-    </div>
-  </section>
-)}
+      {tags.length > 0 && (
+        <section class="oc-section">
+          <div class="oc-section-head">
+            <span class="oc-section-label">Browse by topic</span>
+          </div>
+          <div class="oc-tags-grid">
+            {tags.map(([name, count]) => (
+              <div class="oc-tag-card">
+                <p class="oc-tag-name">{name}</p>
+                <span class="oc-tag-count">{count} {count === 1 ? 'article' : 'articles'}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </main>
     <Footer />
 
@@ -97,6 +97,9 @@ const tags = [...tagCounts.entries()]
         line-height: 1.6;
         max-width: 1100px;
         margin: 0 auto;
+        padding: 0;
+        width: 100%;
+        box-sizing: border-box;
       }
 
       .oc-hero {
@@ -112,7 +115,7 @@ const tags = [...tagCounts.entries()]
         color: var(--oc-text);
       }
       .oc-hero h1 em {
-		font-style: normal;
+        font-style: normal;
         color: var(--oc-accent);
         font-weight: 400;
       }
@@ -236,13 +239,40 @@ const tags = [...tagCounts.entries()]
       }
 
       @media (max-width: 720px) {
-        .oc-hero { padding: 56px 24px 48px; }
-        .oc-section { padding: 48px 24px; }
+        .oc-hero {
+          padding: 56px 24px 48px;
+        }
+        .oc-hero h1 {
+          font-size: clamp(40px, 11vw, 56px);
+        }
+        .oc-hero-sub {
+          font-size: 16px;
+        }
+        .oc-meta {
+          gap: 14px 20px;
+          font-size: 12px;
+        }
+        .oc-section {
+          padding: 48px 24px;
+        }
+        .oc-section-head {
+          margin-bottom: 24px;
+        }
         .oc-article {
           grid-template-columns: 1fr;
           gap: 8px;
+          padding: 20px 0;
         }
-        .oc-tag { text-align: left; }
+        .oc-article:hover {
+          margin: 0;
+          padding: 20px 0;
+          background: transparent;
+        }
+        .oc-tag {
+          text-align: left;
+          order: -1;
+          font-size: 11px;
+        }
         .oc-tags-grid {
           grid-template-columns: repeat(2, 1fr);
         }

@@ -12,8 +12,7 @@ import HeaderLink from './HeaderLink.astro';
 			<HeaderLink href="/about">About</HeaderLink>
 		</div>
 		<div class="social-links">
-			<a href="https://github.com/ocaca3" target="_blank" rel="noopener">
-				<span class="sr-only">GitHub</span>
+			<a href="https://github.com/ocaca3" target="_blank" rel="noopener" aria-label="GitHub">
 				<svg viewBox="0 0 16 16" aria-hidden="true" width="20" height="20"
 					><path
 						fill="currentColor"
@@ -29,8 +28,7 @@ import HeaderLink from './HeaderLink.astro';
 					></path></svg
 				>
 			</a>
-			<a href="/rss.xml">
-				<span class="sr-only">RSS</span>
+			<a href="/rss.xml" aria-label="RSS">
 				<svg viewBox="0 0 16 16" aria-hidden="true" width="20" height="20"
 					><path
 						fill="currentColor"
@@ -100,8 +98,25 @@ import HeaderLink from './HeaderLink.astro';
 		color: var(--oc-accent-dark);
 	}
 	@media (max-width: 720px) {
-		header { padding: 0 1em; }
-		.internal-links { display: flex; }
-		nav a { padding: 1em 0.4em; font-size: 13px; }
+		header {
+			padding: 0 1em;
+		}
+		nav {
+			flex-wrap: wrap;
+			gap: 0.5em;
+		}
+		h2 {
+			font-size: 18px;
+		}
+		.internal-links {
+			display: flex;
+		}
+		nav a {
+			padding: 0.8em 0.4em;
+			font-size: 13px;
+		}
+		.social-links a {
+			padding: 0.8em 0.3em;
+		}
 	}
 </style>
