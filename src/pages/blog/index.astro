@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
@@ -8,107 +7,157 @@ import Header from '../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
 const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
 <!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
+<html lang="ja">
+  <head>
+    <BaseHead title={`Blog | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main class="oc-main">
+      <section class="oc-page-head">
+        <h1>Blog</h1>
+        <p class="oc-page-sub">これまでに書いたぜんぶの記事。新しい順。</p>
+      </section>
+
+      <section class="oc-section">
+        <div class="oc-articles">
+          {posts.map((post) => (
+            <a href={`/blog/${post.id}/`} class="oc-article">
+              <div class="oc-date">
+                <FormattedDate date={post.data.pubDate} />
+              </div>
+              <div class="oc-article-body">
+                <h3 class="oc-article-title">{post.data.title}</h3>
+                {post.data.description && (
+                  <p class="oc-article-excerpt">{post.data.description}</p>
+                )}
+              </div>
+              <div class="oc-tag">
+                {(post.data.tags ?? []).slice(0, 2).join(' / ')}
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    </main>
+    <Footer />
+
+    <style>
+      .oc-main {
+        font-family: 'Inter', system-ui, sans-serif;
+        color: var(--oc-text);
+        line-height: 1.6;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .oc-page-head {
+        padding: 80px 56px 40px;
+      }
+      .oc-page-head h1 {
+        font-family: 'Fraunces', Georgia, serif;
+        font-weight: 300;
+        font-size: clamp(40px, 5vw, 56px);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        margin: 0 0 16px;
+        color: var(--oc-text);
+      }
+      .oc-page-sub {
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--oc-text-muted);
+        margin: 0;
+      }
+
+      .oc-section {
+        padding: 32px 56px 80px;
+        border-top: 1px solid var(--oc-border);
+      }
+
+      .oc-articles {
+        display: grid;
+        gap: 0;
+      }
+      .oc-article {
+        display: grid;
+        grid-template-columns: 140px 1fr 140px;
+        gap: 32px;
+        padding: 28px 0;
+        border-top: 1px solid var(--oc-border);
+        align-items: baseline;
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.2s;
+      }
+      .oc-article:first-child {
+        border-top: none;
+      }
+      .oc-article:hover {
+        background: rgba(124, 198, 42, 0.07);
+        margin: 0 -16px;
+        padding: 28px 16px;
+      }
+      .oc-article:last-child {
+        border-bottom: 1px solid var(--oc-border);
+      }
+      .oc-date {
+        font-size: 13px;
+        color: var(--oc-text-faint);
+        font-variant-numeric: tabular-nums;
+      }
+      .oc-article-title {
+        font-family: 'Fraunces', Georgia, serif;
+        font-size: 22px;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+        line-height: 1.3;
+        margin: 0 0 6px;
+        color: var(--oc-text);
+      }
+      .oc-article-excerpt {
+        font-size: 14px;
+        color: var(--oc-text-muted);
+        line-height: 1.5;
+        margin: 0;
+      }
+      .oc-tag {
+        font-size: 12px;
+        color: var(--oc-accent-dark);
+        text-align: right;
+      }
+
+      @media (max-width: 720px) {
+        .oc-page-head {
+          padding: 48px 24px 24px;
+        }
+        .oc-section {
+          padding: 24px 24px 56px;
+        }
+        .oc-article {
+          grid-template-columns: 1fr;
+          gap: 8px;
+          padding: 20px 0;
+        }
+        .oc-article:hover {
+          margin: 0;
+          padding: 20px 0;
+          background: transparent;
+        }
+        .oc-tag {
+          text-align: left;
+          order: -1;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </body>
 </html>
